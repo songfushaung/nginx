@@ -1,5 +1,4 @@
-# nginx
-原理 负载均衡 高并发解决
+# nginx原理 负载均衡 高并发解决
   1.nginx是高性能的http服务器/反向代理服务器
   
   2.功能作用:
@@ -51,5 +50,38 @@
           hash $request_uri; 
           hash_method crc32; 
           } 
-   
+       nginx解决网站跨域问题
+    配置:
+    server {
+            listen       80;
+            server_name  www.itmayiedu.com;
+            location /A {
+            proxy_pass  http://a.a.com:81/A;
+          index  index.html index.htm;
+            }
+        location /B {
+            proxy_pass  http://b.b.com:81/B;
+          index  index.html index.htm;
+            }
+        }
+
+    nginx配置防盗链
+    location ~ .*\.(jpg|jpeg|JPG|png|gif|icon)$ {
+            valid_referers blocked http://www.itmayiedu.com www.itmayiedu.com;
+            if ($invalid_referer) {
+                return 403;
+            }
+        }
+
+
+    nginx配置DDOS流量攻击
+    limit_req_zone $binary_remote_addr zone=one:10m rate=2r/s;
+    server {
+    ...
+    location /login.html {
+    limit_req zone=one;
+    ...
+    }
+    }
+
    6.看doc文档
